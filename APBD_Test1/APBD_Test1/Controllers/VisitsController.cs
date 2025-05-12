@@ -1,4 +1,5 @@
-﻿using APBD_Test1.Repositories;
+﻿using APBD_Test1.Models;
+using APBD_Test1.Repositories;
 using APBD_Test1.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,20 @@ public class VisitsController : ControllerBase
     {
         return Ok(await _dbService.GetVisitByIdAsync(id, cancellationToken));
     }
-    
-    [HttpPost("")]
+
+    [HttpPost]
+    public async Task<IActionResult> AddVisit([FromBody] VisitRequestDto visit, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var res = await _dbService.AddVisitAsync(visit, cancellationToken);
+            return CreatedAtAction(nameof(GetVisit), new { id = res }, res);
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+        
+        
+    }
 }
